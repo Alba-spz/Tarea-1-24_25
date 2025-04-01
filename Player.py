@@ -2,29 +2,24 @@ from Character import Character
 
 class Player(Character):
     def __init__(self, name, score=0, lives=3):
-        """
-        Initializes the Player with a score of 0 and 3 lives.
-        """
-        self.score = 0
-        self.lives = 3
+        super().__init__(name)
+        self.score = score
+        self.lives = lives
+
+    def hit_by_enemy(self):
+        self.lives -= 1
+        if self.lives <= 0:
+            print(f"{self.name} has been defeated. Game over!")
+            # Add logic to end the game here
+        else:
+            print(f"{self.name} was hit! Lives remaining: {self.lives}")
+            # Add logic to respawn the player after a brief delay
 
     def move(self, direction):
-        """
-        Overrides the move method to include player-specific behavior.
-        """
-        super().move(direction)
-        print(f"Player moved {direction}.")
+        print(f"{self.name} moves {direction}.")
 
     def shoot(self):
-        """
-        Overrides the shoot method to include player-specific behavior.
-        """
-        super().shoot()
-        print("Player fired a shot.")
+        print(f"{self.name} shoots!")
 
-# Example usage
-if __name__ == "__main__":
-    player = Player()
-    player.move("up")
-    player.shoot()
-    print(f"Score: {player.score}, Lives: {player.lives}")
+    def __str__(self):
+        return f"Player(name={self.name}, score={self.score}, lives={self.lives})"
