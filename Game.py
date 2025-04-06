@@ -1,12 +1,13 @@
 from Player import Player
 from Boss import Boss
+from Opponent import Opponent
 import pygame
 class Game:
     def __init__(self):
         self.score = 0
         self.player = None
         self.lives = 3
-        self.opponent = None
+        self.opponent = Opponent(x=300, y=100, color=(255, 255, 0))
         self.is_running = False
 
     def set_player(self, player):
@@ -38,9 +39,12 @@ class Game:
         else:
             print("Cannot convert enemy to star. The game is not running.")
 
-    def display_score_and_lives(self):
-        if self.player:
-            print(f"Score: {self.score} | Lives: {self.player.lives}")
+    def display_score_and_lives(self, screen):
+        font = pygame.font.Font(None, 36)
+        score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
+        screen.blit(score_text, (10, 10)) 
+        lives_text = font.render(f"Lives: {self.player.lives}", True, (255, 255, 255))
+        screen.blit(lives_text, (10, 50))
 
     def remove_opponent(self):
         if self.opponent:
@@ -91,9 +95,18 @@ class Game:
                 self.player.move('up')
             if keys[pygame.K_DOWN]:
                 self.player.move('down')
+            if keys[pygame.K_SPACE]:
+                self.player.shoot() 
+
+            self.opponent.move('left')  # Move the opponent
+
+            for shot in self.player.shots:
+                shot.move()
 
             screen.fill((0, 0, 0))
             self.player.draw(screen)
+            self.opponent.draw(screen)
+            self.display_score_and_lives(screen)
             pygame.display.flip()
             clock.tick(60)
 

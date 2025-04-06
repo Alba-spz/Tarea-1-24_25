@@ -1,4 +1,5 @@
 from Character import Character
+from Shot import Shot
 import pygame
 
 class Player(Character):
@@ -7,6 +8,11 @@ class Player(Character):
         self.name = name
         self.score = 0
         self.speed = 5
+        self.shots = [] # List to hold shots fired by the player
+
+    def shoot(self):
+        shot = Shot(self.x + self.width // 2 - 2, self.y)
+        self.shots.append(shot) # Add the shot to the list
 
     def hit_by_enemy(self):
         self.lives -= 1
@@ -28,11 +34,10 @@ class Player(Character):
         elif direction == 'right':
             self.x += self.speed
 
-    def shoot(self):
-        print(f"{self.name} shoots!")
-
     def __str__(self):
         return f"Player(name={self.name}, score={self.score}, lives={self.lives})"
     
     def draw(self, screen):
         super().draw(screen) # Draw the player character
+        for shot in self.shots:
+            shot.draw(screen)
