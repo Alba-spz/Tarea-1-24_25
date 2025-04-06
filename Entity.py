@@ -1,8 +1,19 @@
+import pygame
 class Entity:
-    def __init__(self, x, y, image):
+    def __init__(self, x, y, width=50, height=50, color=(255, 255, 255)):
+        """
+        Inicializa la entidad con la posición, dimensiones y color.
+        :param x: Posición X en la pantalla.
+        :param y: Posición Y en la pantalla.
+        :param width: Ancho del rectángulo.
+        :param height: Alto del rectángulo.
+        :param color: Color del rectángulo (por defecto blanco).
+        """
         self.x = x
         self.y = y
-        self.image = image
+        self.width = width
+        self.height = height
+        self.color = color
         
     def move(self, dx, dy):
         """
@@ -13,22 +24,12 @@ class Entity:
         self.x += dx
         self.y += dy
 
-    def get_image(self):
+    def draw(self, screen, color = (255, 255, 255)):
         """
-        Devuelve la imagen de la entidad.
+        Dibuja la entidad en la pantalla.
+        :param screen: La superficie de Pygame donde se dibuja la entidad.
+        :param color: Color de la entidad (por defecto blanco).
         """
-        return self.image
-    
-    def set_image(self, image):
-        """
-        Establece la imagen de la entidad.
-        """
-        self.image = image
-
-    def draw(self):
-        """
-        Representa la entidad en la pantalla (simulado con un print).
-        """
-        print(f"Entity at position ({self.x}, {self.y})")
+        pygame.draw.rect(screen, color, (self.x, self.y, self.width, self.height))
 
 

@@ -1,14 +1,17 @@
 from Character import Character
+import pygame
 
 class Player(Character):
-    def __init__(self, name, score=0, lives=3):
-        super().__init__(name)
-        self.score = score
-        self.lives = lives
+    def __init__(self, x, y, name, width=50, height=50, lives=3, color=(0, 255, 0)):
+        super().__init__(x, y, width, height, lives, color)
+        self.name = name
+        self.score = 0
+        self.speed = 5
 
     def hit_by_enemy(self):
         self.lives -= 1
-        if self.lives <= 0:
+        self.is_alive = self.lives > 0
+        if not self.is_alive:
             print(f"{self.name} has been defeated. Game over!")
             # Add logic to end the game here
         else:
@@ -16,10 +19,20 @@ class Player(Character):
             # Add logic to respawn the player after a brief delay
 
     def move(self, direction):
-        print(f"{self.name} moves {direction}.")
+        if direction == 'up':
+            self.y -= self.speed
+        elif direction == 'down':
+            self.y += self.speed
+        elif direction == 'left':
+            self.x -= self.speed
+        elif direction == 'right':
+            self.x += self.speed
 
     def shoot(self):
         print(f"{self.name} shoots!")
 
     def __str__(self):
         return f"Player(name={self.name}, score={self.score}, lives={self.lives})"
+    
+    def draw(self, screen):
+        super().draw(screen) # Draw the player character
