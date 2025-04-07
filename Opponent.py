@@ -2,8 +2,8 @@ from Character import Character
 import pygame
 
 class Opponent(Character):
-    def __init__(self, x, y, lives=1, is_star=False):
-        super().__init__(x, y, lives)
+    def __init__(self, x, y, width=50, height=50, color=(255,255,0), lives=1, is_star=False):
+        super().__init__(x, y, width, height, lives, color)
         self.is_star = is_star
 
     def move(self, direction):
@@ -25,7 +25,7 @@ class Opponent(Character):
         """
         self.lives -= 1
         self.is_alive = self.lives > 0
-        print(f"Opponent collided. Lives remaining: {self.health}. Alive: {self.is_alive}")
+        print(f"Opponent collided. Lives remaining: {self.lives}. Alive: {self.is_alive}")
 
     def hit_by_player(self, player):
         """

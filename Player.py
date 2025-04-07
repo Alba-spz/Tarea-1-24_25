@@ -11,8 +11,9 @@ class Player(Character):
         self.shots = [] # List to hold shots fired by the player
 
     def shoot(self):
-        shot = Shot(self.x + self.width // 2 - 2, self.y)
-        self.shots.append(shot) # Add the shot to the list
+        print(f"{self.name} shoots!")
+        new_shot = Shot(self.x + self.width // 2, self.y, width=5, height=10, color=(255, 255, 0))
+        self.shots.append(new_shot) # Add the shot to the list
 
     def hit_by_enemy(self):
         self.lives -= 1

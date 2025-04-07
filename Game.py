@@ -7,8 +7,9 @@ class Game:
         self.score = 0
         self.player = None
         self.lives = 3
-        self.opponent = Opponent(x=300, y=100, color=(255, 255, 0))
+        self.opponent = Opponent(x=300, y=100, color=(255, 0, 0), lives=10)
         self.is_running = False
+        self.shots = []
 
     def set_player(self, player):
         self.player = player
@@ -41,7 +42,7 @@ class Game:
 
     def display_score_and_lives(self, screen):
         font = pygame.font.Font(None, 36)
-        score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
+        score_text = font.render(f"Score: {self.player.score}", True, (255, 255, 255))
         screen.blit(score_text, (10, 10)) 
         lives_text = font.render(f"Lives: {self.player.lives}", True, (255, 255, 255))
         screen.blit(lives_text, (10, 50))
@@ -85,6 +86,9 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
+                elif event.type == pygame.USEREVENT + 1:
+                    self.opponent = Opponent(x=300, y=100)
+                    pygame.time.set_timer(pygame.USEREVENT + 1, 0)  # Stop the timer
 
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT]:
@@ -99,14 +103,31 @@ class Game:
                 self.player.shoot() 
 
             self.opponent.move('left')  # Move the opponent
+            if self.opponent and self.opponent.is_alive:
+                self.opponent.move('left')
 
-            for shot in self.player.shots:
+
+            for shot in self.player.shots[:]:
                 shot.move()
+                if self.opponent and self.opponent.is_alive:
+                    shot_rect = pygame.Rect(shot.x, shot.y, shot.width, shot.height)
+                    opponent_rect = pygame.Rect(self.opponent.x, self.opponent.y, self.opponent.width, self.opponent.height)
+                    if shot_rect.colliderect(opponent_rect):
+                        print("Disparo impactó al oponente!")
+                        self.opponent.hit_by_player(self.player)
+                        self.player.shots.remove(shot)  
+                    # Si el enemigo ha muerto, generar uno nuevo después de un tiempo
+                    if self.opponent and not self.opponent.is_alive:
+                        self.opponent = None
+                        pygame.time.set_timer(pygame.USEREVENT + 1, 1000)  # Esperar 1 segundo para el nuevo enemigo
 
             screen.fill((0, 0, 0))
             self.player.draw(screen)
-            self.opponent.draw(screen)
+            if self.opponent and self.opponent.is_alive:
+                self.opponent.draw(screen)
             self.display_score_and_lives(screen)
+            for shot in self.player.shots:
+                shot.draw(screen)
             pygame.display.flip()
             clock.tick(60)
 
